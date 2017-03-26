@@ -11,11 +11,11 @@ public interface MCLeaksAPI {
     /**
      * Checks whether the specified name is an MCLeaks account
      *
-     * @param name The name to check
+     * @param username The name to check
      * @param callback Handle the processed result
      * @param errorHandler Handle any errors that have occured
      */
-    void checkMCLeak(String name, Consumer<Boolean> callback, Consumer<Throwable> errorHandler);
+    void checkAccount(String username, Consumer<Boolean> callback, Consumer<Throwable> errorHandler);
 
     /**
      * Shuts down the API and prevents further requests
@@ -23,15 +23,67 @@ public interface MCLeaksAPI {
     void shutdown();
 
     /**
-     * Creates a new MCLeaks API with specified parameters
+     * Begins building a new MCLeaks API
      *
-     * @param key The API key for requests
-     * @param threadCount The amount of threads (allows multiple requests to be running)
-     * @param expireAfter The amount of time to cache responses
-     * @param unit The time unit type
      * @return A new MCLeaks API
      */
-    static MCLeaksAPI newAPI(String key, int threadCount, long expireAfter, TimeUnit unit) {
-        return new MCLeaksAPIImpl(key, threadCount, expireAfter, unit);
+    static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Builder for creating a MCLeaks account
+     */
+    class Builder {
+        private String key;
+        private int threadCount = 3;
+        private long expireAfter = 5;
+        private TimeUnit unit = TimeUnit.MINUTES;
+
+        /**
+         * The API key to use, required.
+         *
+         * @param key The key to use
+         * @return This builder
+         */
+        public Builder key(String key) {
+            this.key = key;
+            return this;
+        }
+
+        /**
+         * The amount of threads to use for concurrent requests
+         *
+         * @param threadCount The number of threads
+         * @return This builder
+         */
+        public Builder threadCount(int threadCount) {
+            this.threadCount = threadCount;
+            return this;
+        }
+
+        /**
+         * How long to keep data before requiring re-fetching
+         *
+         * @param expireAfter The amount of time to cache
+         * @param unit The unit of time
+         * @return This builder
+         */
+        public Builder expireAfter(long expireAfter, TimeUnit unit) {
+            this.expireAfter = expireAfter;
+            this.unit = unit;
+            return this;
+        }
+
+        /**
+         * Builds a new MCLeaks API
+         *
+         * @return The built API
+         * @throws NullPointerException if the key wasn't set
+         */
+        public MCLeaksAPI build() {
+            if(key == null) throw new NullPointerException("Key was null");
+            return new MCLeaksAPIImpl(key, threadCount, expireAfter, unit);
+        }
     }
 }
