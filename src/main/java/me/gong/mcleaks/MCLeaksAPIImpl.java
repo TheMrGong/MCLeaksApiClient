@@ -3,9 +3,6 @@ package me.gong.mcleaks;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -13,31 +10,32 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 class MCLeaksAPIImpl implements MCLeaksAPI {
 
-    private static final String API_URL = "http://themrgong.xyz:6970/api/v1/ismcleaks";
+    private static final String API_URL = "http://mcleaks.themrgong.xyz/api/v1/ismcleaks";
 
-    private final ListeningExecutorService service;
+    private final ExecutorService service;
     private final LoadingCache<String, Boolean> cache;
     private final Gson gson = new Gson();
     private final String apiKey;
 
     MCLeaksAPIImpl(String apiKey, int threadCount, long expireAfter, TimeUnit unit) {
-        this.service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(threadCount));
+        this.service = Executors.newFixedThreadPool(threadCount);
         this.cache = CacheBuilder.newBuilder()
-                .refreshAfterWrite(expireAfter, unit).build(new McleaksFetcher());
+                .expireAfterWrite(expireAfter, unit).build(new McleaksFetcher());
         this.apiKey = apiKey;
     }
 
     @Override
-    public void checkMCLeak(String name, Consumer<Boolean> callback, Consumer<Throwable> errorHandler) {
+    public void checkAccount(String username, Consumer<Boolean> callback, Consumer<Throwable> errorHandler) {
         service.submit(() -> {
             try {
-                callback.accept(cache.get(name));
+                callback.accept(cache.get(username));
             } catch (Exception e) {
                 errorHandler.accept(e);
             }
@@ -53,7 +51,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     private static class MCLeaksRequest {
         private String name, apiKey;
 
-        public MCLeaksRequest(String name, String apiKey) {
+        MCLeaksRequest(String name, String apiKey) {
             this.name = name;
             this.apiKey = apiKey;
         }
@@ -94,11 +92,6 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
             conn.disconnect();
             return gson.fromJson(json.toString(), MCLeaksResponse.class).isMcleaks;
-        }
-
-        @Override
-        public ListenableFuture<Boolean> reload(String key, Boolean oldValue) throws Exception {
-            return service.submit(() -> load(key));
         }
     }
 }
