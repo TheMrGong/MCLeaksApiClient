@@ -8,7 +8,7 @@ public class Example {
         MCLeaksAPI api = MCLeaksAPI.builder()
                 .key("e96ed09c36e04471be526d7078ac2c98")
                 .threadCount(2)
-                .expireAfter(5, TimeUnit.MINUTES).build();
+                .expireAfter(10, TimeUnit.MINUTES).build();
 
         api.checkAccount("BwA_BOOMSTICK", isMCLeaks ->
                 System.out.println("Got: " + isMCLeaks), Throwable::printStackTrace);
