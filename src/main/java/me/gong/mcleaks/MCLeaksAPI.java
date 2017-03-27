@@ -32,24 +32,12 @@ public interface MCLeaksAPI {
     }
 
     /**
-     * Builder for creating a MCLeaks account
+     * Builder for creating a MCLeaks checker
      */
     class Builder {
-        private String key;
         private int threadCount = 3;
         private long expireAfter = 5;
         private TimeUnit unit = TimeUnit.MINUTES;
-
-        /**
-         * The API key to use, required.
-         *
-         * @param key The key to use
-         * @return This builder
-         */
-        public Builder key(String key) {
-            this.key = key;
-            return this;
-        }
 
         /**
          * The amount of threads to use for concurrent requests
@@ -82,8 +70,7 @@ public interface MCLeaksAPI {
          * @throws NullPointerException if the key wasn't set
          */
         public MCLeaksAPI build() {
-            if(key == null) throw new NullPointerException("Key was null");
-            return new MCLeaksAPIImpl(key, threadCount, expireAfter, unit);
+            return new MCLeaksAPIImpl(threadCount, expireAfter, unit);
         }
     }
 }

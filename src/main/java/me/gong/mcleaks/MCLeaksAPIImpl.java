@@ -22,13 +22,11 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     private final ExecutorService service;
     private final LoadingCache<String, Boolean> cache;
     private final Gson gson = new Gson();
-    private final String apiKey;
 
-    MCLeaksAPIImpl(String apiKey, int threadCount, long expireAfter, TimeUnit unit) {
+    MCLeaksAPIImpl(int threadCount, long expireAfter, TimeUnit unit) {
         this.service = Executors.newFixedThreadPool(threadCount);
         this.cache = CacheBuilder.newBuilder()
                 .expireAfterWrite(expireAfter, unit).build(new McleaksFetcher());
-        this.apiKey = apiKey;
     }
 
     @Override
@@ -49,11 +47,10 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     }
 
     private static class MCLeaksRequest {
-        private String name, apiKey;
+        private String name;
 
-        MCLeaksRequest(String name, String apiKey) {
+        MCLeaksRequest(String name) {
             this.name = name;
-            this.apiKey = apiKey;
         }
     }
 
@@ -71,7 +68,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
 
-            String input = gson.toJson(new MCLeaksRequest(name, apiKey));
+            String input = gson.toJson(new MCLeaksRequest(name));
 
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());
