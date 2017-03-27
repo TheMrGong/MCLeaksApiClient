@@ -1,7 +1,7 @@
 # MCLeaksApiClient
 Java based client for checking if an account is MCLeaks.
 
-Allows you to interact with my MCLeaks account checker through REST.
+Allows you to interact with my MCLeaks account checker through a RESTful service.
 
 ## Requirements
 Java 8 is required in order to use the API.
@@ -16,7 +16,7 @@ Java 8 is required in order to use the API.
   <dependency>
     <groupId>com.github.TheMrGong</groupId>
     <artifactId>MCLeaksApiClient</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
   </dependency>
   ...
 </dependencies>
@@ -36,7 +36,6 @@ First, you need to get an instance of the API. To do this, use the builder provi
 
 ```java
  MCLeaksAPI api = MCLeaksAPI.builder()
-                .key("e96ed09c36e04471be526d7078ac2c98") //not a real API key
                 .threadCount(2)
                 .expireAfter(10, TimeUnit.MINUTES).build();
 ```
@@ -48,9 +47,10 @@ The expireAfter parameter describes how long to cache data after fetching.
   It is recommended to keep this value high as the status of an account being
    MCLeaks or not is unlikely to change.
 
-You must have a valid API key in order to use this service. 
+~~You must have a valid API key in order to use this service. 
 If you would like an API key, contact me at gongora654@gmail.com with the subject `API Key Request`.
-  Please describe why you want an API key and what you plan to use it with. 
+  Please describe why you want an API key and what you plan to use it with.~~
+###### As of 3/27/2017, an API key is no longer required.
 
 #### Checking if an account is MCLeaks
 
@@ -64,7 +64,6 @@ a ``Consumer`` is used as a callback for your result. If an error was
 thrown, the second ``Consumer`` acts as an error handler. An error
 may be thrown through the following cases:
 
-* An invalid API key was supplied
 * The username supplied doesn't follow Minecraft name conventions
 * An internal server error occured
 * The `GET` method was used instead of the `POST` method
