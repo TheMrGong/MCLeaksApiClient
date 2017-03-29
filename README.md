@@ -69,6 +69,16 @@ may be thrown through the following cases:
 * The `GET` method was used instead of the `POST` method
 * Unable to contact the server
 
+#### Cleaning up
+
+```java
+api.shutdown();
+```
+
+After your project (plugin or otherwise) has shut down, call the `shutdown` method
+to gracefully end lingering threads from the executor service. Any attempts to request
+something from the API will now result in an error.
+
 The full example can be viewed [here](example/Example.java).
 
 ## Compilation

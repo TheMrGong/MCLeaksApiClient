@@ -11,5 +11,8 @@ public class Example {
 
         api.checkAccount("BwA_BOOMSTICK", isMCLeaks ->
                 System.out.println("Got: " + isMCLeaks), Throwable::printStackTrace);
+
+        // clean up (usually in onDisable)
+        api.shutdown();
     }
 }
