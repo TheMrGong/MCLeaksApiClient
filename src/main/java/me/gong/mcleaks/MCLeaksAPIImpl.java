@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 class MCLeaksAPIImpl implements MCLeaksAPI {
 
-    private static final String API_URL = "http://mcleaks.themrgong.xyz/api/v1/ismcleaks";
+    private static final String API_URL = "http://themrgong.xyz:6970/api/v1/ismcleaks";
 
     private final ExecutorService service;
     private final LoadingCache<String, Boolean> cache;
