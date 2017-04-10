@@ -16,7 +16,7 @@ Java 8 is required in order to use the API.
   <dependency>
     <groupId>com.github.TheMrGong</groupId>
     <artifactId>MCLeaksApiClient</artifactId>
-    <version>1.2</version>
+    <version>1.4</version>
   </dependency>
   ...
 </dependencies>
