@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -64,14 +65,18 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         public Boolean load(String name) throws Exception {
             URL url = new URL(API_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            String input = gson.toJson(new MCLeaksRequest(name));
+            byte[] data = input.getBytes(StandardCharsets.UTF_8);
+
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
-
-            String input = gson.toJson(new MCLeaksRequest(name));
+            conn.setRequestProperty("Content-Length", Integer.toString(data.length));
+            conn.setRequestProperty("charset", "utf-8");
 
             OutputStream os = conn.getOutputStream();
-            os.write(input.getBytes());
+            os.write(data);
             os.flush();
 
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
