@@ -59,6 +59,10 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         private boolean isMcleaks;
     }
 
+    private static class MCLeaksError {
+        private String error;
+    }
+
     private class McleaksFetcher extends CacheLoader<String, Boolean> {
 
         @Override
@@ -79,13 +83,9 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
             os.write(data);
             os.flush();
 
-            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + conn.getResponseCode());
-            }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
+                    (conn.getResponseCode() < 400 ? conn.getInputStream() : conn.getErrorStream())));
 
             StringBuilder json = new StringBuilder();
             String output;
@@ -93,6 +93,11 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
                 json.append(output);
 
             conn.disconnect();
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                final MCLeaksError mcLeaksError = gson.fromJson(json.toString(), MCLeaksError.class);
+                throw new RuntimeException("Failed request with response code \"" + conn.getResponseCode() + "\" " +
+                        (mcLeaksError == null ? "No error message supplied" : "Error message: " + mcLeaksError.error));
+            }
             return gson.fromJson(json.toString(), MCLeaksResponse.class).isMcleaks;
         }
     }

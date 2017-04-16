@@ -6,7 +6,7 @@
 
     <groupId>me.gong</groupId>
     <artifactId>mcleaks-api</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
 
     <build>
         <defaultGoal>clean install package</defaultGoal>
