@@ -14,17 +14,17 @@ Java 8 is required in order to use the API.
 
 <dependencies>
   <dependency>
-    <groupId>com.github.TheMrGong</groupId>
-    <artifactId>MCLeaksApiClient</artifactId>
-    <version>1.5</version>
+      <groupId>me.gong</groupId>
+      <artifactId>mcleaks-api</artifactId>
+      <version>1.6-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
 
 <repositories>
   <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
+      <id>themrgong-repo</id>
+      <url>https://repo.themrgong.xyz/repository/thirdparty</url>
   </repository>
   ...
 </repositories>
@@ -86,6 +86,10 @@ The full example can be viewed [here](example/Example.java).
 Build with `mvn clean install`. Get the jar out of the `/target` folder
 
 The latest version can be found [here](https://github.com/TheMrGong/MCLeaksApiClient/releases/latest).
+
+## JavaDocs
+
+For a full run down of all the methods, the JavaDocs can be seen [here](https://mcleaks.themrgong.xyz).
 
 
 ## License
