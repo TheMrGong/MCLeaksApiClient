@@ -67,7 +67,6 @@ public interface MCLeaksAPI {
          * Builds a new MCLeaks API
          *
          * @return The built API
-         * @throws NullPointerException if the key wasn't set
          */
         public MCLeaksAPI build() {
             return new MCLeaksAPIImpl(threadCount, expireAfter, unit);
