@@ -3,9 +3,6 @@ Java based client for checking if an account is MCLeaks.
 
 Allows you to interact with my MCLeaks account checker through a RESTful service.
 
-The API and domain will be down while the nameservers transfer. Apologies for any inconveniences
------
-
 ## Requirements
 Java 8 is required in order to use the API.
 
