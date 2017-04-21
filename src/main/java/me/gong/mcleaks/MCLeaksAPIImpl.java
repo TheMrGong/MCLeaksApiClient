@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 class MCLeaksAPIImpl implements MCLeaksAPI {
 
-    private static final String API_URL = "http://mcleaks.themrgong.xyz/api/v1/ismcleaks";
+    private static final String API_URL = "https://mcleaks.themrgong.xyz/api/v1/ismcleaks";
 
     private final ExecutorService service;
     private final LoadingCache<String, Boolean> cache;
@@ -32,7 +32,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
     @Override
     public void checkAccount(String username, Consumer<Boolean> callback, Consumer<Throwable> errorHandler) {
-        service.submit(() -> {
+        this.service.submit(() -> {
             try {
                 callback.accept(cache.get(username));
             } catch (Exception e) {
@@ -94,7 +94,12 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
             conn.disconnect();
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                final MCLeaksError mcLeaksError = gson.fromJson(json.toString(), MCLeaksError.class);
+                MCLeaksError mcLeaksError;
+                try {
+                    mcLeaksError = gson.fromJson(json.toString(), MCLeaksError.class);
+                } catch (Exception ex) {
+                    throw new RuntimeException("Failed to properly decode error: \"" + json.toString() + "\" with response code \"" + conn.getResponseCode() + "\"", ex);
+                }
                 throw new RuntimeException("Failed request with response code \"" + conn.getResponseCode() + "\" " +
                         (mcLeaksError == null ? "No error message supplied" : "Error message: " + mcLeaksError.error));
             }

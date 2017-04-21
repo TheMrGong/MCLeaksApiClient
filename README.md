@@ -16,7 +16,7 @@ Java 8 is required in order to use the API.
   <dependency>
       <groupId>me.gong</groupId>
       <artifactId>mcleaks-api</artifactId>
-      <version>1.6-SNAPSHOT</version>
+      <version>1.7-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
