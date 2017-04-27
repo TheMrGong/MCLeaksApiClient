@@ -25,7 +25,7 @@ public class APIIntegrationTest {
         this.api = MCLeaksAPI.builder()
                 .threadCount(2)
                 .expireAfter(10, TimeUnit.MINUTES)
-                .debug()
+                .testing()
                 .build();
     }
 

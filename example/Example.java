@@ -10,6 +10,12 @@ public class Example {
                 .threadCount(2)
                 .expireAfter(10, TimeUnit.MINUTES).build();
 
+        {
+            MCLeaksAPI noCache = MCLeaksAPI.builder()
+                    .threadCount(2)
+                    .nocache().build();
+        }
+
         final String playerName = "BwA_BOOMSTICK";
         final UUID playerUUID = UUID.fromString("071a1906-a49c-4eaa-9156-98df14c2c72b"); // ideally gotten from a real player
 

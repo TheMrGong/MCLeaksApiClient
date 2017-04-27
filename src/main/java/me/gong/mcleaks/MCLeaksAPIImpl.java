@@ -7,10 +7,8 @@ import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,21 +18,39 @@ import java.util.function.Supplier;
 
 class MCLeaksAPIImpl implements MCLeaksAPI {
 
-    private static final String API_PRE = "https://mcleaks.themrgong.xyz/api/v2/",
+    private static final String API_PRE = "https://mcleaks.themrgong.xyz/api/v3/",
             NAME_CHECK = "isnamemcleaks",
             UUID_CHECK = "isuuidmcleaks";
 
     private final ExecutorService service;
     private final LoadingCache<String, Boolean> nameCache;
     private final LoadingCache<UUID, Boolean> uuidCache;
+    private final MCLeaksChecker<String> nameChecker;
+    private final MCLeaksChecker<UUID> uuidChecker;
     private final Gson gson = new Gson();
 
     private final boolean testing;
 
     MCLeaksAPIImpl(int threadCount, long expireAfter, TimeUnit unit, boolean testing) {
         this.service = Executors.newFixedThreadPool(threadCount);
-        this.nameCache = createCache(expireAfter, unit, new MCLeaksNameChecker());
-        this.uuidCache = createCache(expireAfter, unit, new MCLeaksUUIDChecker());
+
+        this.nameChecker = new MCLeaksNameChecker();
+        this.uuidChecker = new MCLeaksUUIDChecker();
+
+        this.nameCache = createCache(expireAfter, unit, this.nameChecker);
+        this.uuidCache = createCache(expireAfter, unit, this.uuidChecker);
+
+        this.testing = testing;
+    }
+
+    MCLeaksAPIImpl(int threadCount, boolean testing) {
+        this.service = Executors.newFixedThreadPool(threadCount);
+
+        this.nameChecker = new MCLeaksNameChecker();
+        this.uuidChecker = new MCLeaksUUIDChecker();
+
+        this.nameCache = null;
+        this.uuidCache = null;
 
         this.testing = testing;
     }
@@ -47,7 +63,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     @Override
     public Result checkAccount(String username) {
         try {
-            return new Result(nameCache.get(username));
+            return new Result(checkNameExists(username));
         } catch (Exception ex) {
             return new Result(ex.getCause());
         }
@@ -61,7 +77,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     @Override
     public Result checkAccount(UUID uuid) {
         try {
-            return new Result(uuidCache.get(uuid));
+            return new Result(checkUUIDExists(uuid));
         } catch (Exception ex) {
             return new Result(ex.getCause());
         }
@@ -71,6 +87,16 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     public void shutdown() {
         this.service.shutdown();
         this.nameCache.cleanUp();
+    }
+
+    private boolean checkNameExists(String name) throws Exception {
+        if (this.nameCache == null) return this.nameChecker.load(name);
+        return this.nameCache.get(name);
+    }
+
+    private boolean checkUUIDExists(UUID uuid) throws Exception {
+        if (this.uuidCache == null) return this.uuidChecker.load(uuid);
+        return this.uuidCache.get(uuid);
     }
 
     private <T> LoadingCache<T, Boolean> createCache(long expireAfter, TimeUnit unit, MCLeaksChecker<T> checker) {
@@ -83,22 +109,6 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
             if (result.hasError()) errorHandler.accept(result.getError());
             else callback.accept(result.isMCLeaks());
         });
-    }
-
-    private static class MCLeaksNameRequest {
-        private String name;
-
-        MCLeaksNameRequest(String name) {
-            this.name = name;
-        }
-    }
-
-    private static class MCLeaksUUIDRequest {
-        private String uuid;
-
-        MCLeaksUUIDRequest(UUID uuid) {
-            this.uuid = uuid.toString();
-        }
     }
 
     private static class MCLeaksResponse {
@@ -117,8 +127,8 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         }
 
         @Override
-        protected String getInputAsJson(String input) {
-            return gson.toJson(new MCLeaksNameRequest(input));
+        protected String getInputText(String input) {
+            return input;
         }
     }
 
@@ -130,32 +140,20 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         }
 
         @Override
-        protected String getInputAsJson(UUID input) {
-            return gson.toJson(new MCLeaksUUIDRequest(input));
+        protected String getInputText(UUID input) {
+            return input.toString();
         }
     }
 
     private abstract class MCLeaksChecker<T> extends CacheLoader<T, Boolean> {
 
         @Override
-        public Boolean load(T name) throws Exception {
-            URL url = new URL(API_PRE + getApiType());
+        public Boolean load(T value) throws Exception {
+            URL url = new URL(API_PRE + getApiType() + "/" + this.getInputText(value));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            String input = this.getInputAsJson(name);
-            byte[] data = input.getBytes(StandardCharsets.UTF_8);
-
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Content-Length", Integer.toString(data.length));
-            conn.setRequestProperty("charset", "utf-8");
+            conn.setRequestMethod("GET");
             conn.setRequestProperty("User-Agent", "MCLeaksApiClient" + (testing ? "-testing" : ""));
-
-            OutputStream os = conn.getOutputStream();
-            os.write(data);
-            os.flush();
-
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getResponseCode() < 400 ? conn.getInputStream() : conn.getErrorStream())));
@@ -186,6 +184,6 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
         protected abstract String getApiType();
 
-        protected abstract String getInputAsJson(T input);
+        protected abstract String getInputText(T input);
     }
 }

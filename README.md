@@ -4,7 +4,7 @@ Java based client for checking if an account is MCLeaks.
 Allows you to interact with my MCLeaks account checker through a RESTful service.
 
 ## Requirements
-Java 8 is required in order to use the API.
+Java 8 is required in order to use the Java API.
 
 ## How to use
 
@@ -16,7 +16,7 @@ Java 8 is required in order to use the API.
   <dependency>
       <groupId>me.gong</groupId>
       <artifactId>mcleaks-api</artifactId>
-      <version>1.8.1-SNAPSHOT</version>
+      <version>1.9.0-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
@@ -48,6 +48,16 @@ You may also use the API synchronously, which will block the thread executing th
 The expireAfter parameter describes how long to cache data after fetching. 
   It is recommended to keep this value high as the status of an account being
    MCLeaks or not is unlikely to change.
+   
+If you don't require cache'd results (implementing your own cache), instead of calling
+```java
+.expireAfter(10, TimeUnit.MINUTES)
+```
+You would instead call
+```java
+.nocache()
+```
+which will instead directly retrieve results instead of querying the cache.
 
 ~~You must have a valid API key in order to use this service. 
 If you would like an API key, contact me at gongora654@gmail.com with the subject `API Key Request`.
@@ -59,7 +69,7 @@ Checking if an account is MCLeaks
 
 #### Asynchronously
 
-Uses a callback and a seperate (pooled) thread in order to ensure
+Uses a callback and a separate (pooled) thread in order to ensure
 the calling thread never blocks. 
 
 ##### Using usernames (not recommended)
@@ -92,7 +102,7 @@ be more consistent in the event that a player changes their username.
 
 Blocks the thread calling the method until either the account has been 
 checked or an error has occurred checking the account. Regarding the Bukkit API,
-can be useful in the [AsyncPlayerPreLoginEven](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/player/AsyncPlayerPreLoginEvent.html) in order to delay their login
+can be useful in the [AsyncPlayerPreLoginEvent](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/player/AsyncPlayerPreLoginEvent.html) in order to delay their login
 until the API has finished its request.
 
 ##### Using usernames (not recommended)

@@ -127,7 +127,7 @@ public interface MCLeaksAPI {
         private int threadCount = 3;
         private long expireAfter = 5;
         private TimeUnit unit = TimeUnit.MINUTES;
-        private boolean testing;
+        private boolean testing, noCache;
 
         /**
          * The amount of threads to use for concurrent requests
@@ -141,7 +141,8 @@ public interface MCLeaksAPI {
         }
 
         /**
-         * How long to keep data before requiring re-fetching
+         * How long to keep data before requiring re-fetching.
+         * Not used if {@link Builder#nocache()} is used
          *
          * @param expireAfter The amount of time to cache
          * @param unit        The unit of time
@@ -158,8 +159,19 @@ public interface MCLeaksAPI {
          *
          * @return This builder
          */
-        public Builder debug() {
+        public Builder testing() {
             this.testing = true;
+            return this;
+        }
+
+        /**
+         * Makes it so a cache is not used.
+         * Useful if you're going to implement your own cache
+         *
+         * @return This builder
+         */
+        public Builder nocache() {
+            this.noCache = true;
             return this;
         }
 
@@ -169,6 +181,7 @@ public interface MCLeaksAPI {
          * @return The built API
          */
         public MCLeaksAPI build() {
+            if(this.noCache) return new MCLeaksAPIImpl(threadCount, testing);
             return new MCLeaksAPIImpl(threadCount, expireAfter, unit, testing);
         }
     }
