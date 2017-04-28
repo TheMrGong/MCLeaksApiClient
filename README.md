@@ -1,4 +1,7 @@
+
 # MCLeaksApiClient
+[![MCLeaks REST API](http://online.swagger.io/validator?url=https://mcleaks.themrgong.xyz/restapi/swagger.yaml)](https://mcleaks.themrgong.xyz/restapi/) Click to view all REST API endpoints
+ 
 Java based client for checking if an account is MCLeaks.
 
 Allows you to interact with my MCLeaks account checker through a RESTful service.
@@ -102,7 +105,7 @@ be more consistent in the event that a player changes their username.
 
 Blocks the thread calling the method until either the account has been 
 checked or an error has occurred checking the account. Regarding the Bukkit API,
-can be useful in the [AsyncPlayerPreLoginEvent](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/player/AsyncPlayerPreLoginEvent.html) in order to delay their login
+blocking thread within the [AsyncPlayerPreLoginEvent](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/player/AsyncPlayerPreLoginEvent.html) can be useful to delay the players' login
 until the API has finished its request.
 
 ##### Using usernames (not recommended)
@@ -151,6 +154,12 @@ The latest version can be found [here](https://github.com/TheMrGong/MCLeaksApiCl
 ## JavaDocs
 
 For a full run down of all the methods, the JavaDocs can be seen [here](https://mcleaks.themrgong.xyz).
+
+## REST API Endpoints
+
+Interested in making your own client or want to know all the available methods?
+Documentation of all the REST API Endpoints can be found [here](https://mcleaks.themrgong.xyz/restapi/).
+
 
 ## Contact
 
