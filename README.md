@@ -1,6 +1,5 @@
 
 # MCLeaksApiClient
-[![MCLeaks REST API](http://online.swagger.io/validator?url=https://mcleaks.themrgong.xyz/restapi/swagger.yaml)](https://mcleaks.themrgong.xyz/restapi/) Click to view all REST API endpoints
  
 Java based client for checking if an account is MCLeaks.
 
