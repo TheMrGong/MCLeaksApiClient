@@ -1,5 +1,6 @@
 
 # MCLeaksApiClient
+[![Amount of accounts](https://mcleaks.themrgong.xyz/badge.svg)](https://mcleaks.themrgong.xyz/restapi)
  
 Java based client for checking if an account is MCLeaks.
 
@@ -7,6 +8,41 @@ Allows you to interact with my MCLeaks account checker through a RESTful service
 
 ## Requirements
 Java 8 is required in order to use the Java API.
+
+## FAQ
+
+**Q:** _Why isn't there an extension?_  
+**A:** There is an extension for the service, however, it's private to me
+and a friend. The reason being that where MCLeaks able to view its source,
+they would be able to discern how I bypass their anti-bot security. 
+
+Due to the latest changes in MCLeaks, crowd-sourcing is no longer possible,
+meaning existing public extensions will no longer function.
+
+
+**Q:** _How are accounts obtained for the service?_  
+**A:** As stated above, there is a private extension that grabs tokens
+and submits them through a private channel. 
+
+**Q:** _Why should I use this service?_  
+**A:** Should someone retrieve their account and want to play on your 
+server, you wouldn't want to deal with manually proving they've recovered
+their account. 
+
+The way I store alts is unique, in that I can check
+if an alt is still usable, and if it is, I know the account is still
+susceptible to a malicious user logging in it.
+
+**Q:** _How reliable is the service?_  
+**A:** The server is implemented using [Spark Framework](https://sparkjava.com) 
+as the backbone. A secondary server runs as failover in the event of the
+first server going down. This allows seamless updates with no down-time,
+as your traffic is automatically rerouted by [nginx](https://www.nginx.com/)
+to the backup server.
+
+As a precaution, I have money on stand-by in order to upgrade the
+servers should I see the server is under heavy-load.
+
 
 ## How to use
 
