@@ -169,7 +169,6 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
                 try {
                     mcLeaksError = gson.fromJson(json.toString(), MCLeaksError.class);
                 } catch (Exception ex) {
-                    System.out.println("Failed to read error");
                     throw new RuntimeException("Failed to properly decode error: \"" + json.toString() + "\" with response code \"" + conn.getResponseCode() + "\"", ex);
                 }
                 throw new RuntimeException("Failed request with response code \"" + conn.getResponseCode() + "\" " +

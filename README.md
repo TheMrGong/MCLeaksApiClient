@@ -1,6 +1,6 @@
 
 # MCLeaksApiClient
-[![Amount of accounts](https://mcleaks.themrgong.xyz/badge.svg)](https://mcleaks.themrgong.xyz/restapi)
+[![Amount of names](https://mcleaks.themrgong.xyz/badge.svg)](https://mcleaks.themrgong.xyz/restapi)
  
 Java based client for checking if an account is MCLeaks.
 
@@ -42,6 +42,14 @@ to the backup server.
 
 As a precaution, I have money on stand-by in order to upgrade the
 servers should I see the server is under heavy-load.
+
+**Q:** _How should MCLeaks accounts be handled?_  
+**A:** You should only kick the account; banning removes the benefit
+of someone being able to recover their account. 
+
+If you ban the user, then they'll both have to be removed from my database
+and be unbanned on your server. Kicking simplifies this, and allows
+you to easily keep and up-to-date state with who is and isn't an MCLeaks account.
 
 
 ## How to use
@@ -195,6 +203,14 @@ For a full run down of all the methods, the JavaDocs can be seen [here](https://
 Interested in making your own client or want to know all the available methods?
 Documentation of all the REST API Endpoints can be found [here](https://mcleaks.themrgong.xyz/restapi/).
 
+## Rate Limiting
+
+The API is limited to 4 requests a second with a burst allowance of
+10 requests in cases of going slightly above the rate limit for a 
+short period of time. Implementation uses the [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket).
+Should you exceed the limit there is currently no penalty besides having
+to wait 1 second before your next requests. If you are exceeding this limit,
+use the contact below for an increase in your rate limit.
 
 ## Contact
 
