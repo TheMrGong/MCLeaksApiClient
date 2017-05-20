@@ -205,8 +205,8 @@ Documentation of all the REST API Endpoints can be found [here](https://mcleaks.
 
 ## Rate Limiting
 
-The API is limited to 4 requests a second with a burst allowance of
-10 requests in cases of going slightly above the rate limit for a 
+The API is limited to 8 requests a second with a burst allowance of
+50 requests in cases of going above the rate limit for a 
 short period of time. Implementation uses the [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket).
 Should you exceed the limit there is currently no penalty besides having
 to wait 1 second before your next requests. If you are exceeding this limit,
