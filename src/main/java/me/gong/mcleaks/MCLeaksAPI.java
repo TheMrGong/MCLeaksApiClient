@@ -128,6 +128,7 @@ public interface MCLeaksAPI {
         private long expireAfter = 5;
         private TimeUnit unit = TimeUnit.MINUTES;
         private boolean testing, noCache;
+        private String userAgent = "MCLeaksApiClient";
 
         /**
          * The amount of threads to use for concurrent requests
@@ -165,6 +166,17 @@ public interface MCLeaksAPI {
         }
 
         /**
+         * Changes the user agent used in requests
+         *
+         * @param userAgent The new user agent to use
+         * @return This builder
+         */
+        public Builder userAgent(String userAgent) {
+            this.userAgent = userAgent;
+            return this;
+        }
+
+        /**
          * Makes it so a cache is not used.
          * Useful if you're going to implement your own cache
          *
@@ -181,8 +193,8 @@ public interface MCLeaksAPI {
          * @return The built API
          */
         public MCLeaksAPI build() {
-            if(this.noCache) return new MCLeaksAPIImpl(threadCount, testing);
-            return new MCLeaksAPIImpl(threadCount, expireAfter, unit, testing);
+            if (this.noCache) return new MCLeaksAPIImpl(threadCount, testing, userAgent);
+            return new MCLeaksAPIImpl(threadCount, expireAfter, unit, testing, userAgent);
         }
     }
 }

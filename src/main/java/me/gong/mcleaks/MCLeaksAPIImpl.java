@@ -28,10 +28,11 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     private final MCLeaksChecker<String> nameChecker;
     private final MCLeaksChecker<UUID> uuidChecker;
     private final Gson gson = new Gson();
+    private final String userAgent;
 
     private final boolean testing;
 
-    MCLeaksAPIImpl(int threadCount, long expireAfter, TimeUnit unit, boolean testing) {
+    MCLeaksAPIImpl(int threadCount, long expireAfter, TimeUnit unit, boolean testing, String userAgent) {
         this.service = Executors.newFixedThreadPool(threadCount);
 
         this.nameChecker = new MCLeaksNameChecker();
@@ -41,9 +42,10 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         this.uuidCache = createCache(expireAfter, unit, this.uuidChecker);
 
         this.testing = testing;
+        this.userAgent = userAgent;
     }
 
-    MCLeaksAPIImpl(int threadCount, boolean testing) {
+    MCLeaksAPIImpl(int threadCount, boolean testing, String userAgent) {
         this.service = Executors.newFixedThreadPool(threadCount);
 
         this.nameChecker = new MCLeaksNameChecker();
@@ -53,6 +55,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         this.uuidCache = null;
 
         this.testing = testing;
+        this.userAgent = userAgent;
     }
 
     @Override
@@ -153,7 +156,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "MCLeaksApiClient" + (testing ? "-testing" : ""));
+            conn.setRequestProperty("User-Agent", MCLeaksAPIImpl.this.userAgent + (testing ? "-testing" : ""));
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getResponseCode() < 400 ? conn.getInputStream() : conn.getErrorStream())));

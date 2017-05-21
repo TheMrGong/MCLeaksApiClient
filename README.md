@@ -62,7 +62,7 @@ you to easily keep and up-to-date state with who is and isn't an MCLeaks account
   <dependency>
       <groupId>me.gong</groupId>
       <artifactId>mcleaks-api</artifactId>
-      <version>1.9.0-SNAPSHOT</version>
+      <version>1.9.1-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
@@ -209,7 +209,7 @@ The API is limited to 8 requests a second with a burst allowance of
 50 requests in cases of going above the rate limit for a 
 short period of time. Implementation uses the [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket).
 Should you exceed the limit there is currently no penalty besides having
-to wait 1 second before your next requests. If you are exceeding this limit,
+to wait 1 second before your next request. If you are exceeding this limit,
 use the contact below for an increase in your rate limit.
 
 ## Contact
