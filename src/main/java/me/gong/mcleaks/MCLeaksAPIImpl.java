@@ -75,7 +75,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
     @Override
     public Optional<Boolean> getCachedCheck(String username) {
-        return Optional.ofNullable(this.nameCache == null ? null : this.nameCache.getUnchecked(username));
+        return Optional.ofNullable(this.nameCache == null ? null : this.nameCache.getIfPresent(username));
     }
 
     @Override
@@ -94,7 +94,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
     @Override
     public Optional<Boolean> getCachedCheck(UUID uuid) {
-        return Optional.ofNullable(this.uuidCache == null ? null : this.uuidCache.getUnchecked(uuid));
+        return Optional.ofNullable(this.uuidCache == null ? null : this.uuidCache.getIfPresent(uuid));
     }
 
     @Override

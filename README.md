@@ -62,7 +62,7 @@ you to easily keep and up-to-date state with who is and isn't an MCLeaks account
   <dependency>
       <groupId>me.gong</groupId>
       <artifactId>mcleaks-api</artifactId>
-      <version>1.9.2-SNAPSHOT</version>
+      <version>1.9.3-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
