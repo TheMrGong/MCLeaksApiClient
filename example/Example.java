@@ -1,5 +1,6 @@
 import me.gong.mcleaks.MCLeaksAPI;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +39,15 @@ public class Example {
         // recommended
         final MCLeaksAPI.Result uuidResult = api.checkAccount(playerUUID);
         // use your result
+
+        // -- cache'd results
+
+        // not recommended
+        final Optional<Boolean> cachedName = api.getCachedCheck(playerName);
+        // use your result
+
+        // recommended
+        final Optional<Boolean> cachedUUID = api.getCachedCheck(playerUUID);
 
         // clean up (usually in onDisable)
         api.shutdown();

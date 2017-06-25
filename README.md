@@ -62,7 +62,7 @@ you to easily keep and up-to-date state with who is and isn't an MCLeaks account
   <dependency>
       <groupId>me.gong</groupId>
       <artifactId>mcleaks-api</artifactId>
-      <version>1.9.1-SNAPSHOT</version>
+      <version>1.9.2-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
@@ -174,6 +174,25 @@ Use `#isMCLeaks` to, as the name implies, see if the account was MCLeaks.
 If an error has occurred, `#getError` can be used to handle it appropriately.
 As a convenience method, `#hasError` is provided to check if an error has
 occurred. `#getError` will return `null` if no error has arisen.
+
+Using the cache'd result
+-----
+
+The API provides a method to retrieve a username/uuid's mcleaks status without causing a request to be sent.
+This is useful in circumstances where you would like to check if a username/uuid is cache'd. 
+
+##### Getting cache'd username result (not recommended)
+
+```java
+final Optional<Boolean> cachedName = api.getCachedCheck(playerName);
+```
+
+##### Getting cache'd UUID result (recommended)
+
+```java
+final Optional<Boolean> cachedUUID = api.getCachedCheck(playerUUID);
+```
+
 
 Cleaning up
 ----

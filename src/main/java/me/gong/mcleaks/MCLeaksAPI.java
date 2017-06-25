@@ -1,5 +1,6 @@
 package me.gong.mcleaks;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -31,6 +32,15 @@ public interface MCLeaksAPI {
     Result checkAccount(String username);
 
     /**
+     * Gets either a boolean from the cache or null if not yet cache'd
+     * Will also return null if the {@link Builder#nocache()} option was used
+     *
+     * @param username The username to find in the cache
+     * @return A boolean or null if not cache'd
+     */
+    Optional<Boolean> getCachedCheck(String username);
+
+    /**
      * Checks whether the specified name is an MCLeaks account
      *
      * @param uuid         The uuid to check
@@ -46,6 +56,15 @@ public interface MCLeaksAPI {
      * @return The results containing either whether the account was MCLeaks or if there was an error
      */
     Result checkAccount(UUID uuid);
+
+    /**
+     * Gets either a boolean from the cache or null if not yet cache'd
+     * Will also return null if the {@link Builder#nocache()} option was used
+     *
+     * @param uuid The UUID to find in the cache
+     * @return A boolean or null if not cache'd
+     */
+    Optional<Boolean> getCachedCheck(UUID uuid);
 
     /**
      * Shuts down the API and prevents further requests

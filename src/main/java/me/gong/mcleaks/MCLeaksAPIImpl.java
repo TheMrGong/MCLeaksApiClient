@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -73,6 +74,11 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     }
 
     @Override
+    public Optional<Boolean> getCachedCheck(String username) {
+        return Optional.ofNullable(this.nameCache == null ? null : this.nameCache.getUnchecked(username));
+    }
+
+    @Override
     public void checkAccount(UUID uuid, Consumer<Boolean> callback, Consumer<Throwable> errorHandler) {
         doResultHandling(() -> checkAccount(uuid), callback, errorHandler);
     }
@@ -84,6 +90,11 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         } catch (Exception ex) {
             return new Result(ex.getCause());
         }
+    }
+
+    @Override
+    public Optional<Boolean> getCachedCheck(UUID uuid) {
+        return Optional.ofNullable(this.uuidCache == null ? null : this.uuidCache.getUnchecked(uuid));
     }
 
     @Override
