@@ -69,7 +69,7 @@ when building the API (or in the request header `API-Key`)
   <dependency>
       <groupId>me.gong</groupId>
       <artifactId>mcleaks-api</artifactId>
-      <version>1.9.-SNAPSHOT</version>
+      <version>1.9.4-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
@@ -250,7 +250,7 @@ use the contact below for an increase in your rate limit.
 ## Contact
 
 You can contact me regarding questions such as an increase in your rate limit
-or request an account from the database. To contact me, use my [email](mailto:contact@mail.themrgong.xyz)
+or request an account be removed from the database. To contact me, use my [email](mailto:contact@mail.themrgong.xyz)
 and please state what you are contacting me about in the subject line 
 (either `Question - *summarization of question*` or `Account Removal Request - *account name*`)
 If you are contacting me regarding removing an account, you must make sure to have changed the password before
