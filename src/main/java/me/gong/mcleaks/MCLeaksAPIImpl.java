@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 class MCLeaksAPIImpl implements MCLeaksAPI {
 
-    private static final String API_PRE = "http://localhost:6970/api/v3/",
+    private static final String API_PRE = "https://mcleaks.themrgong.xyz/api/v3/",
             NAME_CHECK = "isnamemcleaks",
             UUID_CHECK = "isuuidmcleaks";
 
