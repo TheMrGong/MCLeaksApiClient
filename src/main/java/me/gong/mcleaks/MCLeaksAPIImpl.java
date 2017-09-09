@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 class MCLeaksAPIImpl implements MCLeaksAPI {
 
-    private static final String API_PRE = "https://mcleaks.themrgong.xyz/api/v3/",
+    private static final String API_PRE = "http://localhost:6970/api/v3/",
             NAME_CHECK = "isnamemcleaks",
             UUID_CHECK = "isuuidmcleaks";
 
@@ -29,11 +29,11 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     private final MCLeaksChecker<String> nameChecker;
     private final MCLeaksChecker<UUID> uuidChecker;
     private final Gson gson = new Gson();
-    private final String userAgent;
+    private final String userAgent, apiKey;
 
     private final boolean testing;
 
-    MCLeaksAPIImpl(int threadCount, long expireAfter, TimeUnit unit, boolean testing, String userAgent) {
+    MCLeaksAPIImpl(int threadCount, long expireAfter, TimeUnit unit, boolean testing, String userAgent, String apiKey) {
         this.service = Executors.newFixedThreadPool(threadCount);
 
         this.nameChecker = new MCLeaksNameChecker();
@@ -44,9 +44,10 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
         this.testing = testing;
         this.userAgent = userAgent;
+        this.apiKey = apiKey;
     }
 
-    MCLeaksAPIImpl(int threadCount, boolean testing, String userAgent) {
+    MCLeaksAPIImpl(int threadCount, boolean testing, String userAgent, String apiKey) {
         this.service = Executors.newFixedThreadPool(threadCount);
 
         this.nameChecker = new MCLeaksNameChecker();
@@ -57,6 +58,7 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
         this.testing = testing;
         this.userAgent = userAgent;
+        this.apiKey = apiKey;
     }
 
     @Override
@@ -100,7 +102,6 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     @Override
     public void shutdown() {
         this.service.shutdown();
-        this.nameCache.cleanUp();
     }
 
     private boolean checkNameExists(String name) throws Exception {
@@ -163,23 +164,24 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
         @Override
         public Boolean load(T value) throws Exception {
-            URL url = new URL(API_PRE + getApiType() + "/" + this.getInputText(value));
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            final URL url = new URL(API_PRE + getApiType() + "/" + this.getInputText(value));
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("GET");
             conn.setRequestProperty("User-Agent", MCLeaksAPIImpl.this.userAgent + (testing ? "-testing" : ""));
+            if(apiKey != null) conn.setRequestProperty("API-Key", apiKey);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(
+            final BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getResponseCode() < 400 ? conn.getInputStream() : conn.getErrorStream())));
 
-            StringBuilder json = new StringBuilder();
+            final StringBuilder json = new StringBuilder();
             String output;
             while ((output = br.readLine()) != null)
                 json.append(output);
 
             conn.disconnect();
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                MCLeaksError mcLeaksError;
+                final MCLeaksError mcLeaksError;
                 try {
                     mcLeaksError = gson.fromJson(json.toString(), MCLeaksError.class);
                 } catch (Exception ex) {

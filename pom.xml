@@ -6,7 +6,7 @@
 
     <groupId>me.gong</groupId>
     <artifactId>mcleaks-api</artifactId>
-    <version>1.9.3-SNAPSHOT</version>
+    <version>1.9.4-SNAPSHOT</version>
     <name>MCLeaksApiClient</name>
 
     <build>

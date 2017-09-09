@@ -7,7 +7,8 @@ Java based client for checking if an account is MCLeaks.
 Allows you to interact with my MCLeaks account checker through a RESTful service.
 
 ## Requirements
-Java 8 is required in order to use the Java API.
+Java 8 is required in order to use the Java API. If you'd rather implement 
+your own API (in whatever language), head [here](https://mcleaks.themrgong.xyz/restapi) for the REST API specifications.
 
 ## FAQ
 
@@ -51,6 +52,12 @@ If you ban the user, then they'll both have to be removed from my database
 and be unbanned on your server. Kicking simplifies this, and allows
 you to easily keep and up-to-date state with who is and isn't an MCLeaks account.
 
+**Q:** _I'm frequently hitting your rate limit/my server has large influxes of players
+**A:** Contact me at my [email](mailto:contact@mail.themrgong.xyz) with the subject line
+``MCLeaks - Rate limit increase request``, describe what server this is for and how many
+players the server generally gets. I'll then give you an API token which you then have to use
+when building the API (or in the request header `API-Key`)
+
 
 ## How to use
 
@@ -62,7 +69,7 @@ you to easily keep and up-to-date state with who is and isn't an MCLeaks account
   <dependency>
       <groupId>me.gong</groupId>
       <artifactId>mcleaks-api</artifactId>
-      <version>1.9.3-SNAPSHOT</version>
+      <version>1.9.-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
@@ -82,7 +89,7 @@ In your projects
 First, you need to get an instance of the API. To do this, use the builder provided.
 
 ```java
- MCLeaksAPI api = MCLeaksAPI.builder()
+final MCLeaksAPI api = MCLeaksAPI.builder()
                 .threadCount(2)
                 .expireAfter(10, TimeUnit.MINUTES).build();
 ```
@@ -105,10 +112,19 @@ You would instead call
 ```
 which will instead directly retrieve results instead of querying the cache.
 
+###### API Keys
+If you've received an API key, use it by calling the method `apiKey`
+```java
+.apiKey("6c6b3d9bcfc74723b0fb3178cfb85286")
+```
+An API key isn't required, but it is used in order to determine your rate
+limit. Without an API key, you'll be at the default rate limit.
+
+
 ~~You must have a valid API key in order to use this service. 
 If you would like an API key, contact me at gongora654@gmail.com with the subject `API Key Request`.
-  Please describe why you want an API key and what you plan to use it with.~~
-###### As of 3/27/2017, an API key is no longer required.
+  Please describe why you want an API key and what you plan to use it with.
+As of 3/27/2017, an API key is no longer required.~~
 
 Checking if an account is MCLeaks
 -----
@@ -233,8 +249,9 @@ use the contact below for an increase in your rate limit.
 
 ## Contact
 
-You can contact me regarding questions or requests to remove an account from the database at my [email](mailto:contact@mail.themrgong.xyz). 
-Please state what you are contacting me about in the subject line 
+You can contact me regarding questions such as an increase in your rate limit
+or request an account from the database. To contact me, use my [email](mailto:contact@mail.themrgong.xyz)
+and please state what you are contacting me about in the subject line 
 (either `Question - *summarization of question*` or `Account Removal Request - *account name*`)
 If you are contacting me regarding removing an account, you must make sure to have changed the password before
 doing so. **I will not remove an account if I am still able to log in as it.**

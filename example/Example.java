@@ -9,10 +9,11 @@ public class Example {
 
         MCLeaksAPI api = MCLeaksAPI.builder()
                 .threadCount(2)
+                .apiKey("6c6b3d9bcfc74723b0fb3178cfb85286") // example
                 .expireAfter(10, TimeUnit.MINUTES).build();
 
         {
-            MCLeaksAPI noCache = MCLeaksAPI.builder()
+            MCLeaksAPI noCache = MCLeaksAPI.builder() // if you don't want to cache results
                     .threadCount(2)
                     .nocache().build();
         }
