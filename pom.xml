@@ -59,6 +59,10 @@
                                     <pattern>com.google</pattern>
                                     <shadedPattern>me.gong.mcleaks.util.google</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.squareup</pattern>
+                                    <shadedPattern>me.gong.mcleaks.util.okhttp</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -105,6 +109,7 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>3.9.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
