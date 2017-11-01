@@ -6,7 +6,7 @@
 
     <groupId>me.gong</groupId>
     <artifactId>mcleaks-api</artifactId>
-    <version>1.9.4-SNAPSHOT</version>
+    <version>1.9.5-SNAPSHOT</version>
     <name>MCLeaksApiClient</name>
 
     <build>
@@ -59,6 +59,10 @@
                                     <pattern>com.google</pattern>
                                     <shadedPattern>me.gong.mcleaks.util.google</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.squareup</pattern>
+                                    <shadedPattern>me.gong.mcleaks.util.okhttp</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -100,6 +104,12 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.9.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

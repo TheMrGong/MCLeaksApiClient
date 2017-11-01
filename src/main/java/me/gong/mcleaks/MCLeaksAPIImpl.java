@@ -4,11 +4,12 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -30,10 +31,11 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
     private final MCLeaksChecker<UUID> uuidChecker;
     private final Gson gson = new Gson();
     private final String userAgent, apiKey;
+    private final OkHttpClient okHttpClient;
 
     private final boolean testing;
 
-    MCLeaksAPIImpl(int threadCount, long expireAfter, TimeUnit unit, boolean testing, String userAgent, String apiKey) {
+    MCLeaksAPIImpl(int threadCount, long expireAfter, TimeUnit unit, boolean testing, String userAgent, String apiKey, OkHttpClient okHttpClient) {
         this.service = Executors.newFixedThreadPool(threadCount);
 
         this.nameChecker = new MCLeaksNameChecker();
@@ -45,9 +47,11 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         this.testing = testing;
         this.userAgent = userAgent;
         this.apiKey = apiKey;
+
+        this.okHttpClient = okHttpClient;
     }
 
-    MCLeaksAPIImpl(int threadCount, boolean testing, String userAgent, String apiKey) {
+    MCLeaksAPIImpl(int threadCount, boolean testing, String userAgent, String apiKey, OkHttpClient okHttpClient) {
         this.service = Executors.newFixedThreadPool(threadCount);
 
         this.nameChecker = new MCLeaksNameChecker();
@@ -59,6 +63,8 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
         this.testing = testing;
         this.userAgent = userAgent;
         this.apiKey = apiKey;
+
+        this.okHttpClient = okHttpClient;
     }
 
     @Override
@@ -164,36 +170,39 @@ class MCLeaksAPIImpl implements MCLeaksAPI {
 
         @Override
         public Boolean load(T value) throws Exception {
-            final URL url = new URL(API_PRE + getApiType() + "/" + this.getInputText(value));
-            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            Request.Builder request = new Request.Builder();
 
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", MCLeaksAPIImpl.this.userAgent + (testing ? "-testing" : ""));
-            if(apiKey != null) conn.setRequestProperty("API-Key", apiKey);
+            request.url(API_PRE + getApiType() + "/" + this.getInputText(value));
+            request.addHeader("Content-Type", "application/json");
+            request.addHeader("User-Agent", MCLeaksAPIImpl.this.userAgent + (testing ? "-testing" : ""));
+            if (apiKey != null) request.addHeader("API-Key", apiKey);
 
-            final BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (conn.getResponseCode() < 400 ? conn.getInputStream() : conn.getErrorStream())));
+            Response response = okHttpClient.newCall(request.build()).execute();
+            ResponseBody body = response.body();
 
-            final StringBuilder json = new StringBuilder();
-            String output;
-            while ((output = br.readLine()) != null)
-                json.append(output);
+            String json;
 
-            conn.disconnect();
-            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            if (body != null) {
+                json = body.string();
+            } else {
+                throw new RuntimeException("Failed to get response. Method body was null with response code \"" + response.code() + "\"");
+            }
+
+            if (response.code() != HttpURLConnection.HTTP_OK) {
                 final MCLeaksError mcLeaksError;
                 try {
-                    mcLeaksError = gson.fromJson(json.toString(), MCLeaksError.class);
+                    mcLeaksError = gson.fromJson(json, MCLeaksError.class);
                 } catch (Exception ex) {
-                    throw new RuntimeException("Failed to properly decode error: \"" + json.toString() + "\" with response code \"" + conn.getResponseCode() + "\"", ex);
+                    throw new RuntimeException("Failed to properly decode error: \"" + json + "\" with response code \"" + response.code() + "\"", ex);
                 }
-                throw new RuntimeException("Failed request with response code \"" + conn.getResponseCode() + "\" " +
+                throw new RuntimeException("Failed request with response code \"" + response.code() + "\" " +
                         (mcLeaksError == null ? "No error message supplied" : "Error message: " + mcLeaksError.error));
             }
+
             try {
-                return gson.fromJson(json.toString(), MCLeaksResponse.class).isMcleaks;
+                return gson.fromJson(json, MCLeaksResponse.class).isMcleaks;
             } catch (Exception ex) {
-                throw new RuntimeException("Failed to decode response \"" + json.toString() + "\", had OK response code.");
+                throw new RuntimeException("Failed to decode response \"" + json + "\", had OK response code.");
             }
         }
 

@@ -1,5 +1,7 @@
 package me.gong.mcleaks;
 
+import okhttp3.OkHttpClient;
+
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -148,6 +150,7 @@ public interface MCLeaksAPI {
         private TimeUnit unit = TimeUnit.MINUTES;
         private boolean testing, noCache;
         private String userAgent = "MCLeaksApiClient", apiKey;
+        private OkHttpClient okHttpClient;
 
         /**
          * The amount of threads to use for concurrent requests
@@ -220,13 +223,25 @@ public interface MCLeaksAPI {
         }
 
         /**
+         * Used to implement your own built client
+         *
+         * @param okHttpClient The client used for api calls
+         * @return This builder
+         */
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
+            return this;
+        }
+
+        /**
          * Builds a new MCLeaks API
          *
          * @return The built API
          */
         public MCLeaksAPI build() {
-            if (this.noCache) return new MCLeaksAPIImpl(threadCount, testing, userAgent, apiKey);
-            return new MCLeaksAPIImpl(threadCount, expireAfter, unit, testing, userAgent, apiKey);
+            if (okHttpClient == null) okHttpClient = new OkHttpClient.Builder().build();
+            if (this.noCache) return new MCLeaksAPIImpl(threadCount, testing, userAgent, apiKey, okHttpClient);
+            return new MCLeaksAPIImpl(threadCount, expireAfter, unit, testing, userAgent, apiKey, okHttpClient);
         }
     }
 }
