@@ -69,7 +69,7 @@ when building the API (or in the request header `API-Key`)
   <dependency>
       <groupId>me.gong</groupId>
       <artifactId>mcleaks-api</artifactId>
-      <version>1.9.4-SNAPSHOT</version>
+      <version>1.9.5-SNAPSHOT</version>
   </dependency>
   ...
 </dependencies>
