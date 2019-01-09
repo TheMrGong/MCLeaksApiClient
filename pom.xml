@@ -81,8 +81,8 @@
 
     <distributionManagement>
         <repository>
-            <id>nexus</id>
-            <url>https://repo.themrgong.xyz/repository/thirdparty</url>
+            <id>wesjd-nexus</id>
+            <url>https://nexus.wesjd.net/repository/thirdparty/</url>
         </repository>
     </distributionManagement>
 

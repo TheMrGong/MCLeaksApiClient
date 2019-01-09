@@ -58,6 +58,10 @@
                   <pattern>com.google</pattern>
                   <shadedPattern>me.gong.mcleaks.util.google</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>com.squareup</pattern>
+                  <shadedPattern>me.gong.mcleaks.util.okhttp</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
@@ -81,8 +85,8 @@
   </dependencies>
   <distributionManagement>
     <repository>
-      <id>nexus</id>
-      <url>https://repo.themrgong.xyz/repository/thirdparty</url>
+      <id>wesjd-nexus</id>
+      <url>https://nexus.wesjd.net/repository/thirdparty/</url>
     </repository>
   </distributionManagement>
 </project>

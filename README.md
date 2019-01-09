@@ -76,8 +76,8 @@ when building the API (or in the request header `API-Key`)
 
 <repositories>
   <repository>
-      <id>themrgong-repo</id>
-      <url>https://repo.themrgong.xyz/repository/thirdparty</url>
+      <id>wesjd-repo</id>
+      <url>https://nexus.wesjd.net/repository/thirdparty/</url>
   </repository>
   ...
 </repositories>
